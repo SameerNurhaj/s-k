@@ -1,0 +1,50 @@
+#include <Servo.h>
+
+// Define the pin connections
+#define GAS_SENSOR_PIN1 A0
+#define GAS_SENSOR_PIN2 A1
+#define FLAME_SENSOR_PIN A2
+#define SERVO_PIN 9
+#define BUZZER_PIN 8
+
+// Define the gas level at which the alarm will trigger
+#define GAS_LEVEL_THRESHOLD 200
+
+// Define the flame level at which the alarm will trigger
+#define FLAME_LEVEL_THRESHOLD 300
+
+// Create a servo object
+Servo servo;
+
+void setup() {
+  // Initialize the servo
+  servo.attach(SERVO_PIN);
+
+  // Initialize the buzzer
+  pinMode(BUZZER_PIN, OUTPUT);
+}
+
+void loop() {
+  // Read the gas and flame sensor values
+  int gasLevel1 = analogRead(GAS_SENSOR_PIN1);
+  int gasLevel2 = analogRead(GAS_SENSOR_PIN2);
+  int flameLevel = analogRead(FLAME_SENSOR_PIN);
+
+  // Check if the gas or flame level is above the threshold
+  if (gasLevel1 > GAS_LEVEL_THRESHOLD || gasLevel2 > GAS_LEVEL_THRESHOLD || flameLevel > FLAME_LEVEL_THRESHOLD) {
+    // Activate the buzzer
+    digitalWrite(BUZZER_PIN, HIGH);
+
+    // Move the servo to open the gate
+    servo.write(90);
+  } else {
+    // Deactivate the buzzer
+    digitalWrite(BUZZER_PIN, LOW);
+
+    // Move the servo to close the gate
+    servo.write(0);
+  }
+
+  // Wait for a short period before the next check
+  delay(1000);
+}
